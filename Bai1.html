@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Greeting Page</title>
+<script>
+    // Function to set a cookie
+    function setCookie(name, value, days) {
+        var expires = "";
+        if (days) {
+            var date = new Date();
+            date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+            expires = "; expires=" + date.toUTCString();
+        }
+        document.cookie = name + "=" + (value || "") + expires + "; path=/";
+    }
+
+    // Function to get a cookie by name
+    function getCookie(name) {
+        var nameEQ = name + "=";
+        var cookies = document.cookie.split(';');
+        for (var i = 0; i < cookies.length; i++) {
+            var cookie = cookies[i];
+            while (cookie.charAt(0) == ' ') {
+                cookie = cookie.substring(1, cookie.length);
+            }
+            if (cookie.indexOf(nameEQ) == 0) {
+                return cookie.substring(nameEQ.length, cookie.length);
+            }
+        }
+        return null;
+    }
+
+    // Function to delete a cookie by name
+    function eraseCookie(name) {
+        document.cookie = name + '=; Max-Age=-99999999;';
+    }
+
+    // Function to handle form submission
+    function handleSubmit(event) {
+        event.preventDefault();
+        var username = document.getElementById('username').value;
+        setCookie('username', username, 7); // Cookie expires in 7 days
+        displayGreeting(username);
+    }
+
+    // Function to display greeting message
+    function displayGreeting(username) {
+        var greetingContainer = document.getElementById('greeting');
+        greetingContainer.innerText = "Xin chào " + username + "!";
+        var deleteButton = document.createElement('button');
+        deleteButton.innerText = "Xóa cookie";
+        deleteButton.addEventListener('click', function() {
+            eraseCookie('username');
+            greetingContainer.innerText = "";
+        });
+        greetingContainer.appendChild(deleteButton);
+    }
+
+    // Function to check if username cookie exists and display greeting
+    window.onload = function() {
+        var username = getCookie('username');
+        if (username) {
+            displayGreeting(username);
+        }
+    };
+</script>
+</head>
+<body>
+    <h1>Trang Chào mừng</h1>
+    <form id="usernameForm" onsubmit="handleSubmit(event)">
+        <label for="username">Nhập tên của bạn:</label>
+        <input type="text" id="username" name="username" required>
+        <button type="submit">Gửi</button>
+    </form>
+    <div id="greeting"></div>
+</body>
+</html>
